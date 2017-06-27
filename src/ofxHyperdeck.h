@@ -43,11 +43,15 @@ public:
      bool checkConnection();
      bool _connected;
      void reconnect();
+     string getTransport();
      string _ip;
      
      
      ofxTCPClient hyperdeck;
      
      vector <string> storeText;
+    string timecodeString;
+    string videoformatString;
+    uint64_t transportUpdatedFrame = 0;
      
 };

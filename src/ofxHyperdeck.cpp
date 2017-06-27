@@ -19,7 +19,7 @@ void ofxHyperdeck::setup(string ip){
      if (hyperdeck.isConnected()) {
           cout<<"Connected"<<endl;
      }
-     
+    cerr << hyperdeck.receiveRaw() << endl;
 }
 void ofxHyperdeck::reconnect(){
      if (checkConnection()==false) {
@@ -198,4 +198,51 @@ void ofxHyperdeck::selectSlot(int slot){
      }
      else cout<< "Invalid slot, options are 1 or 2"<<endl;
 
+}
+
+string ofxHyperdeck::getTransport()
+{
+    // clear receive buffer
+    hyperdeck.receiveRaw();
+    hyperdeck.sendRaw("transport info");
+    hyperdeck.sendRaw("\r\n");
+    
+    const string firstline = "208 transport info:";
+    
+    string str = hyperdeck.receive();
+    int numtry = 0;
+    while (str.find(firstline) == string::npos) {
+        str = hyperdeck.receive();
+        numtry++;
+        ofSleepMillis(1);
+        if (numtry > 2) {
+            return "";
+        }
+    }
+    
+    string str2;
+    str2 = hyperdeck.receive();
+    str += "\n" + str2;
+    while (str2 != "" && str2 != "\n") {
+        str2 = hyperdeck.receive();
+        str += "\n" + str2;
+        if (str2.find("loop: ") != string::npos) {
+            break;
+        }
+        if (str2 == "\n") {
+            break;
+        }
+        if (str2 == "") {
+            break;
+        }
+        if (str2.find("timecode: ") != string::npos) {
+            timecodeString = str2.substr(11,str2.size()-12);
+            transportUpdatedFrame = ofGetFrameNum();
+        }
+        if (str2.find("video format: ") != string::npos) {
+            videoformatString = str2.substr(14,str2.size()-15);
+        }
+    }
+    
+    return str;
 }
