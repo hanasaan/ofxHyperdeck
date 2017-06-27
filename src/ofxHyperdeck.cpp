@@ -155,7 +155,7 @@ void ofxHyperdeck::goToTimecode(string timecode){
 }
 void ofxHyperdeck::nudgeTimecodeForwards(string timecode){
     
-     hyperdeck.sendRaw("goto:timecode:{+}{" + timecode );
+     hyperdeck.sendRaw("goto:timecode:+" + timecode );
       hyperdeck.sendRaw("\r\n");
 
 }
@@ -238,6 +238,7 @@ string ofxHyperdeck::getTransport()
         if (str2.find("timecode: ") != string::npos) {
             timecodeString = str2.substr(11,str2.size()-12);
             transportUpdatedFrame = ofGetFrameNum();
+            transportUpdatedTime = ofGetElapsedTimef();
         }
         if (str2.find("video format: ") != string::npos) {
             videoformatString = str2.substr(14,str2.size()-15);

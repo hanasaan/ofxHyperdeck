@@ -53,5 +53,6 @@ public:
     string timecodeString;
     string videoformatString;
     uint64_t transportUpdatedFrame = 0;
-     
+    float transportUpdatedTime = 0;
+    
 };
