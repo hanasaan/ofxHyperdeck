@@ -215,7 +215,7 @@ string ofxHyperdeck::getTransport()
         str = hyperdeck.receive();
         numtry++;
         ofSleepMillis(1);
-        if (numtry > 2) {
+        if (numtry > 6) {
             return "";
         }
     }
