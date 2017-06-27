@@ -131,7 +131,7 @@ void ofxHyperdeck::recordWithName(string name){
 
 void ofxHyperdeck::goToClip(int clipId){
     
-     hyperdeck.sendRaw("goto:clip:" + ofToString(clipId));
+     hyperdeck.sendRaw("goto:clip id:" + ofToString(clipId));
       hyperdeck.sendRaw("\r\n");
 
 }
