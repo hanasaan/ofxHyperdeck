@@ -200,7 +200,7 @@ void ofxHyperdeck::selectSlot(int slot){
 
 }
 
-string ofxHyperdeck::getTransport()
+void ofxHyperdeck::updateTransportInfo()
 {
     // clear receive buffer
     hyperdeck.receiveRaw();
@@ -223,6 +223,25 @@ string ofxHyperdeck::getTransport()
     string str2;
     str2 = hyperdeck.receive();
     str += "\n" + str2;
+    
+    const map<string, string*> transport_string_keys = {
+        {"status: ", &this->transportInfo.status},
+        {"timecode: ", &this->transportInfo.timecode},
+        {"video format: ", &this->transportInfo.videoFormat},
+        {"display timecode: ", &this->transportInfo.displayTimecode}
+    };
+    const map<string, int*> transport_int_keys = {
+        {"speed: ", &this->transportInfo.speed},
+        {"slot id: ", &this->transportInfo.slotId},
+        {"clip id: ", &this->transportInfo.clipId},
+    };
+    const map<string, bool*> transport_bool_keys = {
+        {"single clip: ", &this->transportInfo.bSingleClip},
+        {"loop: ", &this->transportInfo.bLoop}
+    };
+    
+    
+    
     while (str2 != "" && str2 != "\n") {
         str2 = hyperdeck.receive();
         str += "\n" + str2;
@@ -235,15 +254,30 @@ string ofxHyperdeck::getTransport()
         if (str2 == "") {
             break;
         }
-        if (str2.find("timecode: ") != string::npos) {
-            timecodeString = str2.substr(11,str2.size()-12);
-            transportUpdatedFrame = ofGetFrameNum();
-            transportUpdatedTime = ofGetElapsedTimef();
+        
+        for (const auto& key : transport_string_keys) {
+            if (str2.find(key.first) == 0) {
+                *key.second = str2.substr(key.first.size(),
+                                          str2.size()-(key.first.size()+1));
+                transportInfo.updatedFrame = ofGetFrameNum();
+                transportInfo.updatedTime = ofGetElapsedTimef();
+            }
         }
-        if (str2.find("video format: ") != string::npos) {
-            videoformatString = str2.substr(14,str2.size()-15);
+        for (const auto& key : transport_int_keys) {
+            if (str2.find(key.first) == 0) {
+                *key.second = ofToInt(str2.substr(key.first.size(),
+                                          str2.size()-(key.first.size()+1)));
+                transportInfo.updatedFrame = ofGetFrameNum();
+                transportInfo.updatedTime = ofGetElapsedTimef();
+            }
+        }
+        for (const auto& key : transport_bool_keys) {
+            if (str2.find(key.first) == 0) {
+                *key.second = ofToBool(str2.substr(key.first.size(),
+                                                  str2.size()-(key.first.size()+1)));
+                transportInfo.updatedFrame = ofGetFrameNum();
+                transportInfo.updatedTime = ofGetElapsedTimef();
+            }
         }
     }
-    
-    return str;
 }

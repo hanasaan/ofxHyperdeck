@@ -43,16 +43,26 @@ public:
      bool checkConnection();
      bool _connected;
      void reconnect();
-     string getTransport();
+     void updateTransportInfo();
      string _ip;
      
      
      ofxTCPClient hyperdeck;
      
      vector <string> storeText;
-    string timecodeString;
-    string videoformatString;
-    uint64_t transportUpdatedFrame = 0;
-    float transportUpdatedTime = 0;
-    
+    struct TransportInfo
+    {
+        string status;
+        int speed;
+        int slotId;
+        int clipId;
+        bool bSingleClip;
+        string timecode;
+        string displayTimecode;
+        string videoFormat;
+        bool bLoop;
+        uint64_t updatedFrame = 0;
+        float updatedTime = 0;
+    } transportInfo;
+
 };
