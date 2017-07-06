@@ -95,7 +95,7 @@ void ofxHyperdeck::togglePreview(bool _preview){
      }
      
 }
-void ofxHyperdeck::playWithSpeed(float speed){
+void ofxHyperdeck::playWithSpeed(int speed){
      
      if (speed>-1600&&speed<1600) {
           hyperdeck.sendRaw("play:speed:"+ofToString(speed)+"");

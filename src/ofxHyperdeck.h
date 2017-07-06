@@ -23,7 +23,7 @@ public:
      void setRemote(bool _remote);
      void exit();
      void togglePreview(bool _preview);
-     void playWithSpeed(float speed);
+     void playWithSpeed(int speed);
      void playWithLoop();
      void playSingleClip();
      void record();
