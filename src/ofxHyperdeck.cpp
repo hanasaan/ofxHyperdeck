@@ -220,10 +220,6 @@ void ofxHyperdeck::updateTransportInfo()
         }
     }
     
-    string str2;
-    str2 = hyperdeck.receive();
-    str += "\n" + str2;
-    
     const map<string, string*> transport_string_keys = {
         {"status: ", &this->transportInfo.status},
         {"timecode: ", &this->transportInfo.timecode},
@@ -242,7 +238,9 @@ void ofxHyperdeck::updateTransportInfo()
     
     
     
-    while (str2 != "" && str2 != "\n") {
+    string str2;
+    bool updated = false;
+    for (;;) {
         str2 = hyperdeck.receive();
         str += "\n" + str2;
         if (str2.find("loop: ") != string::npos) {
@@ -259,25 +257,26 @@ void ofxHyperdeck::updateTransportInfo()
             if (str2.find(key.first) == 0) {
                 *key.second = str2.substr(key.first.size(),
                                           str2.size()-(key.first.size()+1));
-                transportInfo.updatedFrame = ofGetFrameNum();
-                transportInfo.updatedTime = ofGetElapsedTimef();
+                updated = true;
             }
         }
         for (const auto& key : transport_int_keys) {
             if (str2.find(key.first) == 0) {
                 *key.second = ofToInt(str2.substr(key.first.size(),
                                           str2.size()-(key.first.size()+1)));
-                transportInfo.updatedFrame = ofGetFrameNum();
-                transportInfo.updatedTime = ofGetElapsedTimef();
+                updated = true;
             }
         }
         for (const auto& key : transport_bool_keys) {
             if (str2.find(key.first) == 0) {
                 *key.second = ofToBool(str2.substr(key.first.size(),
                                                   str2.size()-(key.first.size()+1)));
-                transportInfo.updatedFrame = ofGetFrameNum();
-                transportInfo.updatedTime = ofGetElapsedTimef();
+                updated = true;
             }
         }
+    }
+    if (updated) {
+        transportInfo.updatedFrame = ofGetFrameNum();
+        transportInfo.updatedTime = ofGetElapsedTimef();
     }
 }
